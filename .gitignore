@@ -1,0 +1,20 @@
+# R / RStudio local files
+.Rhistory
+.RData
+.RDataTmp
+.Ruserdata
+.Rproj.user/
+
+# Analysis checkpoint files
+*.RData
+
+# Large expression matrix
+data/log2CPM_matrix.txt
+
+# Temporary/system files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Original exploratory script - clean before uploading
+01_reproduce_paper_reference_genes.R
