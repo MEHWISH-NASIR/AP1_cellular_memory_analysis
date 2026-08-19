@@ -1,3 +1,145 @@
+
+required_result_files <- c(
+  "results/Initial_Dex_kinase_response.csv",
+  "results/Memory_9_significant_kinases.csv",
+  "results/Memory_9_kinases_interference.csv"
+)
+
+missing_result_files <- required_result_files[
+  !file.exists(required_result_files)
+]
+
+if (length(missing_result_files) > 0) {
+  stop(
+    "Required intermediate result file(s) missing: ",
+    paste(missing_result_files, collapse = ", "),
+    ". Run scripts 02-04 first or use run_all.R."
+  )
+}
+
+
+initial_kinase_results <- read.csv(
+  "results/Initial_Dex_kinase_response.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+persistent_kinase_results <- read.csv(
+  "results/Memory_9_significant_kinases.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+interference_results <- read.csv(
+  "results/Memory_9_kinases_interference.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+
+
+# Validate required columns
+
+required_initial_columns <- c(
+  "kinase",
+  "logFC",
+  "P.Value",
+  "adj.P.Val",
+  "kinase_FDR"
+)
+
+required_memory_columns <- c(
+  "kinase",
+  "logFC",
+  "P.Value",
+  "adj.P.Val",
+  "kinase_FDR"
+)
+
+required_interference_columns <- c(
+  "kinase",
+  "JNKIN8_logFC",
+  "JNK_interaction",
+  "JNK_interaction_P",
+  "T5224_logFC",
+  "T5224_interaction",
+  "T5224_interaction_P"
+)
+
+stopifnot(
+  all(required_initial_columns %in% colnames(initial_kinase_results)),
+  all(required_memory_columns %in% colnames(persistent_kinase_results)),
+  all(required_interference_columns %in% colnames(interference_results))
+)
+
+stopifnot(
+  !anyDuplicated(initial_kinase_results$kinase),
+  !anyDuplicated(persistent_kinase_results$kinase),
+  !anyDuplicated(interference_results$kinase)
+)
+# Reconstruct objects required by the original script
+
+
+dex_kinases_all <- initial_kinase_results
+rownames(dex_kinases_all) <- dex_kinases_all$kinase
+dex_kinases_all$kinase <- NULL
+
+
+persistent_kinases_FDR05 <- persistent_kinase_results
+rownames(persistent_kinases_FDR05) <-
+  persistent_kinases_FDR05$kinase
+persistent_kinases_FDR05$kinase <- NULL
+
+memory_no_inhib <- persistent_kinases_FDR05
+
+
+rownames(interference_results) <-
+  interference_results$kinase
+
+
+memory_jnk <- data.frame(
+  logFC = interference_results$JNKIN8_logFC,
+  row.names = rownames(interference_results)
+)
+
+memory_t5224 <- data.frame(
+  logFC = interference_results$T5224_logFC,
+  row.names = rownames(interference_results)
+)
+
+jnk_interaction <- data.frame(
+  logFC = interference_results$JNK_interaction,
+  P.Value = interference_results$JNK_interaction_P,
+  row.names = rownames(interference_results)
+)
+
+t5224_interaction <- data.frame(
+  logFC = interference_results$T5224_interaction,
+  P.Value = interference_results$T5224_interaction_P,
+  row.names = rownames(interference_results)
+)
+
+cat(
+  "Loaded intermediate kinase results successfully.\n"
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 memory9 <- rownames(
   persistent_kinases_FDR05
 )

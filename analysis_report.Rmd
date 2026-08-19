@@ -1,0 +1,426 @@
+---
+title: "AP-1 Cellular Memory: Kinase Analysis"
+subtitle: "Reproducible analysis of persistent kinase expression and interference responses"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+    self_contained: true
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center"
+)
+
+options(
+  digits = 4,
+  scipen = 4
+)
+```
+
+# Overview
+
+This report documents a reproducible computational analysis of kinase expression
+associated with cellular memory in the AP-1 cellular adaptation model.
+
+The analysis is based on the study:
+
+**Li J, Ravindran PT, O'Farrell A, et al.
+AP-1 mediates cellular adaptation and memory formation.
+Nature Communications 17, 4265 (2026).**
+
+The goal of this downstream analysis is to identify kinase genes associated with
+the post-dexamethasone memory state and examine how those kinase responses behave
+under AP-1-related interference conditions.
+
+# Reproducible workflow
+
+The complete workflow is executed with:
+
+```text
+Rscript run_all.R
+```
+
+The main analysis pipeline is:
+
+```text
+00_fetch_data.R
+        ↓
+01_setup_and_data.R
+        ↓
+02_initial_Dex_response.R
+        ↓
+03_persistent_kinase_memory.R
+        ↓
+04_kinase_interference.R
+        ↓
+05_integrated_kinase_trajectory.R
+        ↓
+06_make_final_kinase_figure.R
+```
+
+The workflow automatically retrieves the required public input files when the
+`data/` directory is missing.
+
+# Input data
+
+The analysis uses:
+
+```text
+data/log2CPM_matrix.txt
+data/studydesign.tsv
+data/dex_log2FC.txt
+data/dextable.txt
+data/KinHubKinaseList.csv
+```
+
+The AP-1 RNA-seq files originate from the public cellular-memory repository:
+
+<https://github.com/arjunrajlaboratory/cellularmemory>
+
+Relevant source directory:
+
+```text
+extractedData/burninrnaseq/202208/
+```
+
+The kinase reference list is obtained from the KinHub/OpenKinome resource.
+
+# Load analysis outputs
+
+```{r load-results}
+required_outputs <- c(
+  "results/Initial_Dex_kinase_response.csv",
+  "results/Memory_9_significant_kinases.csv",
+  "results/Memory_9_kinases_interference.csv",
+  "results/Integrated_9_kinase_trajectory.csv"
+)
+
+missing_outputs <- required_outputs[
+  !file.exists(required_outputs)
+]
+
+if (length(missing_outputs) > 0) {
+  stop(
+    "Required result file(s) missing: ",
+    paste(missing_outputs, collapse = ", "),
+    ". Run Rscript run_all.R before rendering this report."
+  )
+}
+
+initial <- read.csv(
+  "results/Initial_Dex_kinase_response.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+memory <- read.csv(
+  "results/Memory_9_significant_kinases.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+interference <- read.csv(
+  "results/Memory_9_kinases_interference.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+integrated <- read.csv(
+  "results/Integrated_9_kinase_trajectory.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+```
+
+# Data integrity and sample alignment
+
+The expression dataset contains 191 analyzable samples after alignment with the
+experimental design.
+
+`Sample_147` is present in the design metadata but is absent from the final
+expression matrix and is therefore excluded during the alignment step.
+
+The setup script verifies that the final metadata order exactly matches the
+expression-matrix sample order before downstream analysis.
+
+# Initial dexamethasone kinase response
+
+The initial dexamethasone analysis evaluates kinase-associated transcriptional
+changes during the initial response phase.
+
+```{r initial-summary}
+cat("Kinases evaluated:", nrow(initial), "\n")
+
+cat(
+  "Kinases with kinase-level FDR < 0.05:",
+  sum(initial$kinase_FDR < 0.05, na.rm = TRUE),
+  "\n"
+)
+```
+
+```{r initial-table}
+initial_show <- initial[
+  order(initial$kinase_FDR),
+  c(
+    "kinase",
+    "logFC",
+    "P.Value",
+    "adj.P.Val",
+    "kinase_FDR"
+  )
+]
+
+knitr::kable(
+  head(initial_show, 15),
+  digits = 4,
+  caption = "Top initial dexamethasone-associated kinase responses"
+)
+```
+
+# Persistent kinase memory
+
+The post-dexamethasone memory analysis identified a set of kinase candidates
+passing the kinase-level FDR threshold.
+
+```{r persistent-list}
+cat(
+  paste(memory$kinase, collapse = ", ")
+)
+```
+
+```{r memory-table}
+memory_show <- memory[
+  ,
+  c(
+    "kinase",
+    "logFC",
+    "P.Value",
+    "adj.P.Val",
+    "kinase_FDR"
+  )
+]
+
+knitr::kable(
+  memory_show,
+  digits = 4,
+  caption = "FDR-significant kinase candidates in the memory contrast"
+)
+```
+
+# Integrated kinase trajectories
+
+The integrated analysis compares each persistent kinase across:
+
+- initial dexamethasone response;
+- post-dexamethasone memory;
+- memory with JNK-IN-8;
+- memory with T-5224;
+- JNK-IN-8 interaction;
+- T-5224 interaction.
+
+```{r integrated-table}
+integrated_show <- integrated[
+  ,
+  c(
+    "kinase",
+    "Initial_Dex_logFC",
+    "Initial_Dex_kinaseFDR",
+    "Memory_logFC",
+    "Memory_kinaseFDR",
+    "JNKIN8_Memory_logFC",
+    "T5224_Memory_logFC",
+    "Trajectory"
+  )
+]
+
+knitr::kable(
+  integrated_show,
+  digits = 4,
+  caption = "Integrated trajectory of the nine memory-associated kinase candidates"
+)
+```
+
+# Trajectory classification
+
+```{r trajectory-summary}
+trajectory_summary <- as.data.frame(
+  table(integrated$Trajectory),
+  stringsAsFactors = FALSE
+)
+
+colnames(trajectory_summary) <- c(
+  "Trajectory",
+  "Number_of_kinases"
+)
+
+knitr::kable(
+  trajectory_summary,
+  caption = "Kinase trajectory classes"
+)
+```
+
+The trajectory classes distinguish kinase changes already detectable during the
+initial dexamethasone response from changes that become more prominent in the
+memory state.
+
+# AP-1-related interference analysis
+
+The interference analysis evaluates how the memory-associated kinase effects
+behave in the presence of JNK-IN-8 and T-5224.
+
+```{r interference-table}
+interference_show <- interference[
+  ,
+  c(
+    "kinase",
+    "No_Inhib_logFC",
+    "JNKIN8_logFC",
+    "JNK_interaction",
+    "JNK_interaction_P",
+    "JNK_candidate_FDR",
+    "T5224_logFC",
+    "T5224_interaction",
+    "T5224_interaction_P",
+    "T5224_candidate_FDR"
+  )
+]
+
+knitr::kable(
+  interference_show,
+  digits = 4,
+  caption = "Kinase responses under AP-1-related interference conditions"
+)
+```
+
+# Final kinase trajectory figure
+
+```{r final-figure, out.width="100%"}
+figure_file <- "figures/Final_Kinase_Memory_Interference.png"
+
+if (!file.exists(figure_file)) {
+  stop(
+    "Final figure is missing. Run Rscript run_all.R first."
+  )
+}
+
+knitr::include_graphics(
+  figure_file
+)
+```
+
+**Figure.** Expression effect-size profiles of the nine significant
+memory-associated kinase candidates across the initial dexamethasone response,
+memory state, JNK-IN-8 interference, and T-5224 interference conditions.
+
+# Key output files
+
+The main outputs generated by the pipeline are:
+
+```text
+results/Initial_Dex_kinase_response.csv
+results/Memory_all_476_kinases.csv
+results/Memory_9_significant_kinases.csv
+results/Memory_9_kinases_interference.csv
+results/Integrated_9_kinase_trajectory.csv
+
+figures/Final_Kinase_Memory_Interference.png
+figures/Final_Kinase_Memory_Interference.pdf
+```
+
+# Reproducibility
+
+The repository uses `renv` to record the R package environment.
+
+A fresh clone can be reproduced with:
+
+```text
+git clone <repository-url>
+cd AP1_cellular_memory_analysis
+```
+
+Restore the package environment:
+
+```text
+Rscript -e "renv::restore()"
+```
+
+Then execute the complete workflow:
+
+```text
+Rscript run_all.R
+```
+
+The data-fetching script automatically downloads the required external data
+when they are not already present.
+
+# Software environment
+
+```{r software-environment}
+cat(
+  "R version:",
+  R.version.string,
+  "\n"
+)
+
+cat(
+  "Platform:",
+  R.version$platform,
+  "\n"
+)
+
+packages <- c(
+  "limma",
+  "dplyr",
+  "ggplot2",
+  "rmarkdown",
+  "knitr"
+)
+
+package_versions <- data.frame(
+  Package = packages,
+  Version = vapply(
+    packages,
+    function(x) {
+      if (requireNamespace(x, quietly = TRUE)) {
+        as.character(
+          packageVersion(x)
+        )
+      } else {
+        "Not installed"
+      }
+    },
+    character(1)
+  )
+)
+
+knitr::kable(
+  package_versions,
+  caption = "Software packages used in the analysis and report"
+)
+```
+
+# Summary
+
+This reproducible workflow:
+
+1. retrieves the required public datasets;
+2. validates sample alignment;
+3. quantifies the initial dexamethasone kinase response;
+4. identifies persistent kinase-associated memory;
+5. evaluates JNK-IN-8 and T-5224 interference conditions;
+6. integrates kinase trajectories;
+7. generates the final kinase trajectory figure.
+
+The current analysis identifies nine kinase candidates that pass the defined
+memory-associated kinase FDR criterion.
+
+Their initial-response, memory, and interference profiles are retained in the
+integrated result table for downstream biological interpretation.
