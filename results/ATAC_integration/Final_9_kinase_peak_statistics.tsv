@@ -1,0 +1,10 @@
+kinase	RNA_memory_logFC	RNA_memory_FDR	RNA_trajectory	geneLevel_ATAC_memory_log2FC	RNA_ATAC_geneLevel_direction	memory_peak_count	memory_significant_peak_count	best_memory_peak	peak_log2FC	peak_pvalue	peak_FDR	acute_Dex_reported_overlap	final_ATAC_interpretation
+TESK2	-1.44002468664609	0.00444367423587641	Initial_nominal_same_direction	0.510496	opposite_direction	0	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+PRKCE	-1.0870059131003	0.0308372472656878	Memory_emergent	0.105763	opposite_direction	0	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+ACVR1C	-1.92808428090835	0.00194624527355684	Memory_emergent	0.62574	opposite_direction	1	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+SNRK	-0.9089420834345	0.0220153954787098	Memory_emergent	0.0572321	opposite_direction	0	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+STK32A	-1.2668494796857	0.0226631910688174	Memory_emergent	0.752407	opposite_direction	1	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+PIM1	0.957005131751797	0.00365431946106389	Memory_emergent	0.275777	same_direction	0	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+CDK2	-0.880833437647585	0.0226075806009838	Memory_emergent	1.38516	opposite_direction	2	1	chr12:56358987-56360175	1.0276855	2.664021e-05	3.493652e-03	NO	Significant_ATAC_discordant_with_RNA
+ERBB3	-1.51752035663425	0.00960108380663561	Memory_emergent	0.619298	opposite_direction	1	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak
+TRIB3	0.944223114642724	0.00648949939230663	Initial_responder_direction_reversal	-0.0258342	opposite_direction	1	0	NA	NA	NA	NA	NA	No_FDR05_memory_ATAC_peak

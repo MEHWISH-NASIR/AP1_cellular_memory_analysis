@@ -48,3 +48,37 @@ Thumbs.db
 /results/RNA_memory_kinases_nearest_persistent_ATAC.csv
 /results/dex_learned_243_regions.bed
 /results/dex_memory_60_regions.bed
+# ============================================================
+# ATAC integration: local / exploratory files
+# ============================================================
+
+/tools/
+
+/results/Genomewide_memory_results.csv
+/results/Persistent_RNA_genes_FDR05.csv
+
+/results/ATAC_integration/genomewide/
+/results/ATAC_integration/genomewide_386/
+
+/results/ATAC_integration/J*_*.tab
+/results/ATAC_integration/*_authors.html
+
+/results/ATAC_integration/ATAC_unavailable_chr22_genes.tsv
+
+/results/ATAC_integration/Persistent_RNA_gene_coordinates_hg19.tsv
+/results/ATAC_integration/Persistent_RNA_geneBody_plus2kb_hg19.bed
+/results/ATAC_integration/Persistent_RNA_geneBody_plus2kb_hg19_386.bed
+
+/results/ATAC_integration/RNA_ATAC_386_gene_integration.tsv
+/results/ATAC_integration/RNA_ATAC_concordant_candidates.tsv
+/results/ATAC_integration/RNA_ATAC_strict_shortlist.tsv
+/results/ATAC_integration/RNA_ATAC_trajectory_consistent_candidates.tsv
+
+/results/ATAC_integration/ATAC_9kinases_8samples_mean0.tsv
+/results/ATAC_integration/ATAC_9kinases_4conditions_mean.tsv
+/results/ATAC_integration/RNA_ATAC_9kinase_integration.tsv
+
+/results/ATAC_integration/kinase_geneBody_plus2kb_hg19.bed
+/results/ATAC_integration/CDK2_TSS_plusminus5kb_hg19.bed
+/results/ATAC_integration/CDK2_upstream_consensus_peak.bed
+/results/ATAC_integration/PIM1_TSS_plusminus5kb_hg19.bed

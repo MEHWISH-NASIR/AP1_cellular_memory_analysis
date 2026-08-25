@@ -449,3 +449,70 @@ The workflow has been tested by:
 
 The project can therefore be reproduced from the documented input sources,
 analysis scripts, package lockfile, and single pipeline entry point.
+
+---
+
+## ATAC-seq integration of the nine kinase candidates
+
+An additional chromatin-accessibility analysis was performed for the nine
+FDR-significant memory-associated kinase candidates using the processed ATAC-seq
+data from the original AP-1 cellular-memory study.
+
+Gene-body plus 2 kb upstream accessibility was summarized across five conditions:
+
+- 3-day DMSO;
+- 3-day Dex;
+- Dex followed by DMSO;
+- DMSO followed by trametinib;
+- Dex followed by trametinib.
+
+These regional bigWig summaries were used for descriptive trajectory inspection.
+They were not treated as formal statistical tests.
+
+For peak-level statistical evidence, the authors' DESeq2 differential ATAC
+results for Dex-to-Tram versus DMSO-to-Tram were intersected with the nine kinase
+regions.
+
+Among the nine kinase candidates:
+
+- 6 reported differential ATAC peaks overlapped five kinase loci;
+- only one overlapping peak passed FDR < 0.05;
+- the significant peak was associated with CDK2.
+
+CDK2 peak:
+
+```text
+chr12:56358987-56360175
+DESeq2 log2FoldChange = +1.028
+adjusted P value = 0.00349
+```
+
+CDK2 RNA expression in the memory contrast was significantly decreased
+(logFC approximately -0.881; FDR approximately 0.0226), whereas accessibility
+at this local ATAC peak increased. The RNA and ATAC responses are therefore
+discordant.
+
+The CDK2 peak was not present among the peaks reported in the authors'
+3-day Dex versus DMSO differential ATAC table. It is therefore described here
+as a memory-associated / Dex-history-associated accessibility change rather
+than as a canonical acute-Dex-induced learned peak.
+
+Key outputs:
+
+```text
+results/ATAC_integration/Final_9_kinase_RNA_ATAC_summary.tsv
+results/ATAC_integration/Final_9_kinase_peak_statistics.tsv
+results/ATAC_integration/CDK2_significant_peak_trajectory.tsv
+
+figures/CDK2_significant_ATAC_peak_trajectory.png
+figures/CDK2_significant_ATAC_peak_trajectory.pdf
+```
+
+Script for the CDK2 trajectory figure:
+
+```text
+07_CDK2_ATAC_peak_figure.R
+```
+
+The large ATAC bigWig files, local UCSC utilities, downloaded HTML reports, and
+exploratory genome-wide RNA-ATAC analyses are intentionally not committed.

@@ -424,3 +424,97 @@ memory-associated kinase FDR criterion.
 
 Their initial-response, memory, and interference profiles are retained in the
 integrated result table for downstream biological interpretation.
+
+# ATAC-seq integration of the nine kinase candidates
+
+An additional chromatin-accessibility analysis was performed for the nine
+FDR-significant memory-associated kinase candidates using the processed ATAC-seq
+data from the original AP-1 cellular-memory study.
+
+Gene-body plus 2 kb upstream bigWig accessibility was summarized across:
+
+- 3-day DMSO;
+- 3-day Dex;
+- Dex followed by DMSO;
+- DMSO followed by trametinib;
+- Dex followed by trametinib.
+
+These regional bigWig summaries are used as descriptive accessibility
+trajectories and are not treated as formal differential-accessibility tests.
+
+For formal peak-level evidence, the authors' DESeq2 differential ATAC results
+for Dex-to-Tram versus DMSO-to-Tram were intersected with the nine kinase
+regions.
+
+```{r atac-peak-statistics}
+atac_stats_file <- "results/ATAC_integration/Final_9_kinase_peak_statistics.tsv"
+
+if (!file.exists(atac_stats_file)) {
+  stop("Missing ATAC result file: ", atac_stats_file)
+}
+
+atac_stats <- read.delim(
+  atac_stats_file,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
+
+atac_show <- atac_stats[
+  ,
+  c(
+    "kinase",
+    "RNA_memory_logFC",
+    "RNA_memory_FDR",
+    "memory_peak_count",
+    "memory_significant_peak_count",
+    "best_memory_peak",
+    "peak_log2FC",
+    "peak_FDR",
+    "final_ATAC_interpretation"
+  )
+]
+
+knitr::kable(
+  atac_show,
+  digits = 4,
+  caption = "Peak-level ATAC evidence for the nine memory-associated kinase candidates"
+)
+```
+
+Across the nine kinase candidates, six reported differential ATAC peaks
+overlapped five kinase loci. Only one overlapping peak passed FDR < 0.05.
+
+The significant peak was associated with **CDK2**:
+
+```text
+chr12:56358987-56360175
+DESeq2 log2FoldChange = +1.028
+adjusted P value = 0.00349
+```
+
+CDK2 RNA expression in the memory contrast was significantly decreased
+(logFC approximately -0.881; FDR approximately 0.0226), whereas accessibility
+at this local ATAC peak increased. Thus, the RNA and chromatin-accessibility
+responses are discordant.
+
+The CDK2 peak was not represented among the peaks reported in the authors'
+3-day Dex versus DMSO differential ATAC table. It is therefore interpreted here
+as a memory-associated / Dex-history-associated accessibility change rather
+than as a canonical acute-Dex-induced learned peak.
+
+## CDK2 significant ATAC peak trajectory
+
+```{r cdk2-atac-figure, out.width="90%"}
+cdk2_figure <- "figures/CDK2_significant_ATAC_peak_trajectory.png"
+
+if (!file.exists(cdk2_figure)) {
+  stop("Missing CDK2 ATAC figure: ", cdk2_figure)
+}
+
+knitr::include_graphics(cdk2_figure)
+```
+
+**Figure.** Accessibility trajectory at the statistically significant CDK2
+memory-associated ATAC peak. Open circles represent biological replicates and
+filled points represent condition means. The DESeq2 statistic refers specifically
+to the Dex-to-Tram versus DMSO-to-Tram comparison.
