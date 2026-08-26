@@ -527,6 +527,14 @@ the relevant conditions. These panels provide visual locus-level context and hel
 assess whether accessibility changes arise from discrete local peaks rather than
 only from whole-gene averaged signal.
 
+| Samples | Condition |
+|---|---|
+| J3, J16 | 3-day DMSO |
+| J11, J15 | 3-day Dex |
+| J4, J10 | Dex → DMSO |
+| J6, J14 | DMSO → Tram|
+| J18, J7 | Dex → Tram |
+
 ```{r igv-kinase-gallery, echo=FALSE, results='asis'}
 kinases <- c(
   "TESK2", "PRKCE", "ACVR1C", "SNRK", "STK32A",
