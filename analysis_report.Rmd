@@ -518,3 +518,23 @@ knitr::include_graphics(cdk2_figure)
 memory-associated ATAC peak. Open circles represent biological replicates and
 filled points represent condition means. The DESeq2 statistic refers specifically
 to the Dex-to-Tram versus DMSO-to-Tram comparison.
+
+# IGV views for the nine kinase candidates
+
+To complement the gene-body accessibility summaries, IGV snapshots were generated for each of the nine kinase candidate loci using the ATAC-seq bigWig tracks across the relevant conditions. These panels provide visual locus-level context and help assess whether accessibility changes arise from discrete local peaks rather than only from whole-gene averaged signal.
+
+```{r igv-kinase-gallery, echo=FALSE, results='asis'}
+kinases <- c(
+  "TESK2", "PRKCE", "ACVR1C", "SNRK", "STK32A",
+  "PIM1", "CDK2", "ERBB3", "TRIB3"
+)
+
+for (k in kinases) {
+  fig <- file.path("figures", "IGV_kinase_profiles", paste0(k, "_TSSpm50kb.png"))
+  cat("## ", k, "\n\n", sep = "")
+  if (file.exists(fig)) {
+    cat("![](", fig, ")\n\n", sep = "")
+  } else {
+    cat("Missing file: `", fig, "`\n\n", sep = "")
+  }
+}
