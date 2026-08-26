@@ -1,0 +1,39 @@
+new
+genome hg19
+snapshotDirectory C:/Users/HP/Documents/AP1_cellular_memory_analysis/figures/IGV_changed_peak_profiles
+maxPanelHeight 4000
+setSleepInterval 1500
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J3_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J16_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J11_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J15_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J4_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J10_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J6_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J14_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J18_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/data/ATAC_bigWig/Sorted_J7_openRegionRPM.bw
+load C:/Users/HP/Documents/AP1_cellular_memory_analysis/results/ATAC_integration/kinase_changed_peaks_hg19.bed
+scrollToTop
+setLogScale false
+setDataRange 0,8
+setTrackHeight 45 Sorted_J3_openRegionRPM.bw
+setTrackHeight 45 Sorted_J16_openRegionRPM.bw
+setTrackHeight 45 Sorted_J11_openRegionRPM.bw
+setTrackHeight 45 Sorted_J15_openRegionRPM.bw
+setTrackHeight 45 Sorted_J4_openRegionRPM.bw
+setTrackHeight 45 Sorted_J10_openRegionRPM.bw
+setTrackHeight 45 Sorted_J6_openRegionRPM.bw
+setTrackHeight 45 Sorted_J14_openRegionRPM.bw
+setTrackHeight 45 Sorted_J18_openRegionRPM.bw
+setTrackHeight 45 Sorted_J7_openRegionRPM.bw
+goto chr2:158479727-158490891
+snapshot ACVR1C_changedPeak_zoom_sameY.png
+goto chr5:146608677-146619950
+snapshot STK32A_changedPeak_zoom_sameY.png
+goto chr12:56353987-56365847
+snapshot CDK2_changedPeak_zoom_sameY.png
+goto chr12:56471566-56482376
+snapshot ERBB3_changedPeak_zoom_sameY.png
+goto chr20:356217-366903
+snapshot TRIB3_changedPeak_zoom_sameY.png

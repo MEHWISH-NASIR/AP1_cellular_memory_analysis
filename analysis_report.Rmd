@@ -549,3 +549,58 @@ for (k in kinases) {
   }
 }
 ```
+
+# Zoomed IGV views of changed ATAC peaks
+
+To directly examine local differential ATAC peaks, zoomed IGV views were generated
+for the five kinase loci that overlapped peaks reported in the authors'
+Dex-to-Tram versus DMSO-to-Tram differential ATAC analysis.
+
+These views focus on the local changed peak regions rather than accessibility
+averaged across the entire gene body.
+
+Among these five kinase loci, only the CDK2 peak passed FDR < 0.05. The remaining
+peaks are shown for visual inspection but are not considered statistically
+significant after multiple-testing correction.
+
+```{r igv-changed-peak-gallery, echo=FALSE, results='asis'}
+peak_kinases <- c(
+  "ACVR1C",
+  "STK32A",
+  "CDK2",
+  "ERBB3",
+  "TRIB3"
+)
+
+for (k in peak_kinases) {
+
+  fig <- file.path(
+    "figures",
+    "IGV_changed_peak_profiles",
+    paste0(k, "_changedPeak_zoom_sameY.png")
+  )
+
+  cat("## ", k, "\n\n", sep = "")
+
+  if (file.exists(fig)) {
+    cat("![](", fig, ")\n\n", sep = "")
+  } else {
+    cat("Missing file: ", fig, "\n\n", sep = "")
+  }
+}
+```
+
+## Peak-level interpretation
+
+The reported differential ATAC peaks overlapping the kinase loci were:
+
+- **ACVR1C:** one reported peak; not FDR-significant.
+- **STK32A:** one reported peak; not FDR-significant.
+- **CDK2:** two reported peaks, including one FDR-significant peak at
+  `chr12:56358987-56360175` (log2FC = +1.028, FDR = 0.00349).
+- **ERBB3:** one reported peak; not FDR-significant.
+- **TRIB3:** one reported peak; not FDR-significant.
+
+Thus, the zoomed IGV profiles provide visual evidence of the local ATAC signal,
+while formal statistical support for a memory-associated accessibility change is
+strongest for CDK2.
